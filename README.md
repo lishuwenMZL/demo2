@@ -65,42 +65,83 @@ https://www.cnblogs.com/boyuguoblog/p/7744747.html
      
     },
 
-3、H5新特性---本地存储数组（保存搜索的历史记录）
+3、H5新特性---本地存储数组localstroage（保存搜索的历史记录）
+
+原理：页面挂载之前先把存储在本地的数据渲染到页面上，目的是让用户打开页面时还可以看到以前的搜索记录，用户输入搜索关键词时，再把关键词分别添加到渲染在当前页面的数组中和保存在本地localstroage中，保证页面跟本地同步数据；
+
+注意事项：搜索关键词不要重复添加
 
   methods:{
+  
     doSearch(){ //添加历史记录
+    
        if(this.value){
+       
           let pos=this.localArr.indexOf(this.value);//如已经搜索过的记录不再重复出现在列表中
+          
           if(pos<0){
+          
             this.localArr.unshift(this.value);//value分别添加到页面跟本地的数组中
+            
             this.listArr.unshift(this.value); 
+            
             localStorage.setItem("localArr",JSON.stringify(this.localArr));//把数组更新到本地上 
+            
           }else{
+          
             return;
-          }      
+            
+          }   
+          
        }
+       
     },
+    
     deleted(index){//删除某个历史记录
+    
       this.listArr.splice(index,1);
+      
       this.localArr.splice(index,1);
-      localStorage.setItem("localArr",JSON.stringify(this.localArr));//把数组更新到本地上 
+      
+      localStorage.setItem("localArr",JSON.stringify(this.localArr));//把数组更新到本地上
+      
     },
+    
     clearHistory(){ // 清空历史记录
+    
         localStorage.clear();
+        
         this.listArr='';
+        
         location.reload();
+        
     },
+    
     searchHistory(){// 搜索历史
+    
       this.$refs.search.focus();
+      
     }
+    
   },
+  
   mounted () {
+  
     var obj=JSON.parse(localStorage.getItem("localArr")); //初始化页面时先把本地的数据加载到页面
+    
     if(obj){
+    
       this.localArr=obj; //保存本地数据的数组
+      
       for(var i=0;i<obj.length;i++){
+      
         this.listArr.push(obj[i]);// 保存页面数据的数组
+        
       }
-    }   
+      
+    } 
+    
   }
+  
+  4、
 
